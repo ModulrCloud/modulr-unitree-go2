@@ -22,7 +22,6 @@ find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
 find_package(unitree_go REQUIRED)
 
 find_package(PkgConfig)
@@ -30,17 +29,6 @@ pkg_check_modules(PC_ZeroMQ QUIET zmq)
 
 # Find and build Unitree SDK
 add_subdirectory(third_party/unitree_sdk2)
-
-# Find and build messages from the Unitree ROS2 repo
-file(GLOB_RECURSE UNITREE_MSGS "third_party/unitree_ros2/cyclonedds_ws/src/unitree/unitree_go/msg/*.msg")
-set(UNITREE_MSGS_RELATIVE "")
-foreach(file_path ${UNITREE_MSGS})
-    file(RELATIVE_PATH rel_path "${CMAKE_CURRENT_SOURCE_DIR}" "${file_path}")
-    list(APPEND UNITREE_MSGS_RELATIVE "${rel_path}")
-endforeach()
-rosidl_generate_interfaces(${PROJECT_NAME}
-  ${UNITREE_MSGS_RELATIVE}
-)
 
 # Motion Forwarding ROS 2 Node
 add_executable(fwd_motion src/fwd_motion.cpp)
@@ -52,9 +40,6 @@ ament_target_dependencies(fwd_motion
   geometry_msgs
   unitree_go
 )
-# rosidl_target_interfaces(fwd_motion
-#   ${PROJECT_NAME} "rosidl_typesupport_cpp"
-# )
 install(TARGETS fwd_motion
   DESTINATION lib/${PROJECT_NAME})
 

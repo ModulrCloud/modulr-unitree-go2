@@ -79,7 +79,7 @@ This configuration ensures that ROS 2 Foxy and the Unitree Go2 messages are auto
 1. Clone the repository with submodules into a new ROS 2 workspace:
 ```bash
 mkdir -p ~/local_ws/src
-git clone --recursive https://github.com/your-org/modulr-unitree-go2.git ~/local_ws/src/modulr_unitree_go2
+git clone --recursive https://github.com/ModulrCloud/modulr-unitree-go2.git ~/local_ws/src/modulr_unitree_go2
 ```
 
 Or if you already cloned it, initialize the submodules:
