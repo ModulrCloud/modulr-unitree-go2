@@ -4,27 +4,17 @@ After=network.target
 
 [Service]
 Type=simple
-User=unitree
-WorkingDirectory=/home/unitree
 Environment="ROS_DOMAIN_ID=0"
 Environment="RMW_IMPLEMENTATION=rmw_cyclonedds_cpp"
 Environment="CYCLONEDDS_URI=/home/unitree/cyclonedds_ws/cyclonedds.xml"
 Environment="LD_LIBRARY_PATH=/usr/local/lib:/opt/ros/foxy/lib"
-
-# Source ROS 2 and workspace setup
-ExecStart=/bin/bash -c 'source /home/unitree/cyclonedds_ws/install/setup.bash && \
-source /unitree/module/graph_pid_ws/install/setup.bash && \
-source /home/unitree/local_ws/install/setup.bash && \
-ros2 launch modulr_unitree_go2 bringup.launch.py'
-
-# Restart on failure
+ExecStart=/bin/bash -lc 'source /home/unitree/cyclonedds_ws/install/setup.bash && source /unitree/module/graph_pid_ws/install/setup.bash && source /home/unitree/local_ws/install/setup.bash && ros2 launch modulr_unitree_go2 bringup.launch.py'
 Restart=on-failure
 RestartSec=5
-
-# Logging
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=modulr-unitree-go2
 
 [Install]
 WantedBy=default.target
+

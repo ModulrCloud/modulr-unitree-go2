@@ -11,19 +11,11 @@ def generate_launch_description():
             output='screen',
         ),
 
-        # Forward images from SDK node to /camera/image_raw
+        # Capture images from SDK and send using Zenoh
         Node(
             package='modulr_unitree_go2',
-            executable='fwd_camera',
-            name='fwd_camera_node',
-            output='screen',
-        ),
-
-        # Capture images from SDK and send over socket
-        Node(
-            package='modulr_unitree_go2',
-            executable='unitree_video_zmq',  # replace with your executable name
-            name='unitree_video_zmq_node',
+            executable='unitree_video',
+            name='unitree_video_node',
             output='screen',
         ),
     ])

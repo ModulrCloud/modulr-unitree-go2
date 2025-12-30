@@ -6,9 +6,9 @@ if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 99)
 endif()
 
-# Default to C++14
+# Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -19,16 +19,14 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(cv_bridge REQUIRED)
-find_package(OpenCV REQUIRED)
 find_package(unitree_go REQUIRED)
-
-find_package(PkgConfig)
-pkg_check_modules(PC_ZeroMQ QUIET zmq)
 
 # Find and build Unitree SDK
 add_subdirectory(third_party/unitree_sdk2)
+# Unitree Video interface to stream video over Zenoh
+# Build zenoh-c from source for glibc compatibility (static linking)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build static zenoh-c library" FORCE)
+add_subdirectory(third_party/zenoh-c)
 
 # Motion Forwarding ROS 2 Node
 add_executable(fwd_motion src/fwd_motion.cpp)
@@ -43,40 +41,17 @@ ament_target_dependencies(fwd_motion
 install(TARGETS fwd_motion
   DESTINATION lib/${PROJECT_NAME})
 
-# Camera Forwarding ROS 2 Node
-add_executable(fwd_camera src/fwd_camera.cpp)
-target_include_directories(fwd_camera PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-ament_target_dependencies(fwd_camera
-  rclcpp
-  sensor_msgs
-  cv_bridge
-  OpenCV
-)
-target_link_libraries(fwd_camera
-  zmq
-)
-
-install(TARGETS fwd_camera
-  DESTINATION lib/${PROJECT_NAME})
-
-# Unitree Video interface to stream video over ZMQ
-
-add_executable(unitree_video_zmq src/unitree_video_zmq.cpp)
-ament_target_dependencies(unitree_video_zmq
-  OpenCV
-)
-target_include_directories(unitree_video_zmq PRIVATE
+add_executable(unitree_video src/unitree_video.cpp)
+target_include_directories(unitree_video PRIVATE
   third_party/unitree_sdk2/include
   third_party/unitree_sdk2/thirdparty/include
   third_party/unitree_sdk2/thirdparty/include/ddscxx
 )
-target_link_libraries(unitree_video_zmq
+target_link_libraries(unitree_video
   unitree_sdk2
-  zmq
+  zenohc::static
 )
-install(TARGETS unitree_video_zmq
+install(TARGETS unitree_video
   DESTINATION lib/${PROJECT_NAME})
 
 # Install launch files

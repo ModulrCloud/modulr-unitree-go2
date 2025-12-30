@@ -1,13 +1,12 @@
 # Modulr Unitree Go2
 
-This ROS 2 package provides support for the Modulr Agent running on the Unitree Go2 robot. It includes nodes for motion control forwarding, camera streaming, and video transmission over ZMQ.
+This ROS 2 package provides support for the Modulr Agent running on the Unitree Go2 robot. It includes nodes for motion control forwarding and video transmission over Zenoh DDS.
 
 ## Overview
 
-The package provides three main executables:
+The package provides two main executables:
 - **fwd_motion**: Forwards motion commands to the Unitree Go2 robot
-- **fwd_camera**: Forwards camera data from the robot as ROS 2 sensor messages
-- **unitree_video_zmq**: Streams video from the Unitree SDK over ZMQ for efficient network transmission
+- **unitree_video**: Streams video from the Unitree SDK over Zenoh DDS for efficient network transmission
 
 ## Requirements
 
@@ -89,7 +88,7 @@ git submodule update --init --recursive
 
 2. Install dependencies:
 ```bash
-sudo apt-get install ros-$ROS_DISTRO-cv-bridge ros-$ROS_DISTRO-sensor-msgs libzmq3-dev
+sudo apt-get install ros-$ROS_DISTRO-sensor-msgs
 ```
 
 3. Build the package:
@@ -175,7 +174,7 @@ It is recommended to launch all nodes at the same time using the bringup launch 
 ros2 launch modulr_unitree_go2 bringup.launch.py
 ```
 
-This will start all three nodes (fwd_motion, fwd_camera, and unitree_video_zmq) simultaneously for complete robot operation.
+This will start all three nodes (fwd_motion, fwd_camera, and unitree_video) simultaneously for complete robot operation.
 
 ### Motion Forwarding Node
 
@@ -186,20 +185,11 @@ ros2 run modulr_unitree_go2 fwd_motion
 
 This node subscribes to motion command topics and forwards them to the Unitree Go2 robot using the Unitree SDK.
 
-### Camera Forwarding Node
+### Video Streaming Node
 
-Forward camera data from the robot:
+Stream video from the Unitree SDK over Zenoh DDS:
 ```bash
-ros2 run modulr_unitree_go2 fwd_camera
-```
-
-This node receives camera data over ZMQ and publishes it as ROS 2 sensor_msgs/Image messages.
-
-### Video ZMQ Node
-
-Stream video from the Unitree SDK over ZMQ:
-```bash
-ros2 run modulr_unitree_go2 unitree_video_zmq
+ros2 run modulr_unitree_go2 unitree_video
 ```
 
 This executable uses the Unitree SDK2 to capture video and stream it over ZMQ for low-latency network transmission.
@@ -213,8 +203,7 @@ modulr_unitree_go2/
 ├── README.md               # This file
 ├── src/
 │   ├── fwd_motion.cpp      # Motion forwarding node
-│   ├── fwd_camera.cpp      # Camera forwarding node
-│   └── unitree_video_zmq.cpp # Video streaming via ZMQ
+│   └── unitree_video.cpp # Video streaming via ZMQ
 ├── launch/                 # ROS 2 launch files
 │   └── bringup.launch.py   # Main launch file for all nodes
 ├── systemd/                # Systemd service files
@@ -228,6 +217,7 @@ modulr_unitree_go2/
 
 This package includes the following third-party dependency as a git submodule:
 - [Unitree SDK2](https://github.com/unitreerobotics/unitree_sdk2.git): Official SDK for Unitree robots
+- [Zenoh-C](https://github.com/eclipse-zenoh/zenoh-c.git): Zenoh C library for Zenoh backend implementation
 
 ## License
 
