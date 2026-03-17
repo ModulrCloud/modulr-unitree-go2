@@ -39,6 +39,7 @@ add_executable(fwd_motion
 )
 target_include_directories(fwd_motion PRIVATE
   third_party/unitree_ros2/example/src/include
+  third_party/unitree_ros2/example/src/include/common
   third_party/unitree_sdk2/include
   third_party/unitree_sdk2/thirdparty/include
   third_party/unitree_sdk2/thirdparty/include/ddscxx
