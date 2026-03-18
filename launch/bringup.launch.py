@@ -77,8 +77,8 @@ def generate_launch_description():
             output='screen',
         ),
 
-        # Convert /utlidar/cloud_deskewed PointCloud2 to /scan (LaserScan) for Nav2 AMCL and costmap
-        # target_frame: utlidar_lidar — slam_toolbox uses TF tree to place scan in world frame
+        # Convert /utlidar/cloud (raw PointCloud2 in lidar frame) to /scan (LaserScan)
+        # target_frame: utlidar_lidar — scan stays in lidar frame, slam_toolbox uses TF tree
         Node(
             package='pointcloud_to_laserscan',
             executable='pointcloud_to_laserscan_node',
@@ -98,7 +98,7 @@ def generate_launch_description():
                 'use_inf': True,
             }],
             remappings=[
-                ('cloud_in', '/utlidar/cloud_deskewed'),
+                ('cloud_in', '/utlidar/cloud'),
                 ('scan', '/scan'),
             ],
         ),
