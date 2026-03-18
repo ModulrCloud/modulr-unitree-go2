@@ -77,15 +77,15 @@ def generate_launch_description():
             output='screen',
         ),
 
-        # Convert /utlidar/cloud_deskewed (motion-corrected PointCloud2 in odom frame)
-        # to /scan (LaserScan) for Nav2 AMCL and costmap
+        # Convert /utlidar/cloud_deskewed PointCloud2 to /scan (LaserScan) for Nav2 AMCL and costmap
+        # target_frame: utlidar_lidar — slam_toolbox uses TF tree to place scan in world frame
         Node(
             package='pointcloud_to_laserscan',
             executable='pointcloud_to_laserscan_node',
             name='pointcloud_to_laserscan',
             output='screen',
             parameters=[{
-                'target_frame': 'odom',
+                'target_frame': 'utlidar_lidar',
                 'transform_tolerance': 0.01,
                 'min_height': -0.5,
                 'max_height': 0.5,
