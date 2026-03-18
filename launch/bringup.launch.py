@@ -3,6 +3,46 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     return LaunchDescription([
+        # RealSense D435I — depth + RGB + IMU
+        Node(
+            package='realsense2_camera',
+            executable='realsense2_camera_node',
+            name='realsense2_camera_node',
+            output='screen',
+            parameters=[{
+                'enable_depth': True,
+                'enable_color': True,
+                'enable_gyro': True,
+                'enable_accel': True,
+            }],
+        ),
+
+        # Static TF: base_link → camera_link
+        # RealSense D435I on standard Unitree mount: front of robot, 30° pitch down
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='base_link_to_camera',
+            arguments=['0.32715', '0', '0.04297', '0', '-0.5236', '0', 'base_link', 'camera_link'],
+            output='screen',
+        ),
+
+        # Logitech C270 
+        Node(
+            package='usb_cam',
+            executable='usb_cam_node_exe',
+            name='logitech_camera',
+            output='screen',
+            parameters=[{
+                'video_device': '/dev/video6',
+                'image_width': 640,
+                'image_height': 480,
+                'framerate': 30.0,
+                'camera_name': 'logitech_c270',
+            }],
+        ),
+
+
         # Forward motion from /cmd_vel to /api/sport/request via SportClient
         Node(
             package='modulr_unitree_go2',
