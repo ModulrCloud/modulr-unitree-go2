@@ -27,7 +27,7 @@ def generate_launch_description():
             output='screen',
         ),
 
-        # Logitech C270 
+        # Logitech C270
         Node(
             package='usb_cam',
             executable='usb_cam_node_exe',
@@ -39,7 +39,11 @@ def generate_launch_description():
                 'image_height': 480,
                 'framerate': 30.0,
                 'camera_name': 'logitech_c270',
+                'pixel_format': 'yuyv2rgb',
             }],
+            remappings=[
+                ('logitech_c270/image_raw', 'image_raw'),
+            ],
         ),
 
 
@@ -85,7 +89,7 @@ def generate_launch_description():
             name='pointcloud_to_laserscan',
             output='screen',
             parameters=[{
-                'target_frame': 'utlidar_lidar',
+                'target_frame': 'base_link',
                 'transform_tolerance': 0.01,
                 'queue_size': 5,
                 'min_height': 0.05,
